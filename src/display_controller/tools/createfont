@@ -1,0 +1,49 @@
+#!/usr/bin/python2
+#by David Leiter 2012
+
+import sys
+import math
+from PIL import Image
+
+FONT_WIDTH=8
+
+
+if len(sys.argv) < 2:
+	print "error: not enough arguments"
+	exit(1)
+try:
+	img = Image.open(sys.argv[1])
+
+except IOError:
+	print "error: can not open file"
+	exit(1)
+
+if img.mode=="L":
+	image_width=img.size[0]
+	image_height=img.size[1]
+	font_height=image_height
+	chars=image_width/FONT_WIDTH
+	buffer_width=font_height*chars
+	
+	sys.stdout.write("/*font data\n")
+	sys.stdout.write("source: "+img.format+"\n")
+	sys.stdout.write("size: "+str(image_width)+"*"+str(image_height)+"px\n")
+	sys.stdout.write("*/\n\n")
+
+	sys.stdout.write("#define BUFFER_SIZE "+str(buffer_width)+"\n")
+	sys.stdout.write("#define GLYPH_COUNT "+str(chars)+"\n")
+	sys.stdout.write("uint8_t font[""]=\n{\n")
+	
+	for char_cnt in xrange(chars):
+		xpos=char_cnt*FONT_WIDTH
+		for y in xrange(font_height):
+			byte=0
+			for x in xrange(FONT_WIDTH):
+				byte<<=1
+				if img.getpixel((x+xpos,y)) > 0:
+					byte|=1
+			sys.stdout.write(str(byte)+",")
+		sys.stdout.write("  //"+str(char_cnt)+"\n")
+	sys.stdout.write("};\n");
+else:
+	print "error: unsupported image"

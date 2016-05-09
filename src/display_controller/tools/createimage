@@ -1,0 +1,82 @@
+#!/usr/bin/python2
+#by David Leiter 2012
+
+import sys
+from PIL import Image
+
+if len(sys.argv) < 2:
+	print "error"
+	exit(1)
+try:
+	img = Image.open(sys.argv[1])
+
+except IOError:
+	print "error"
+	exit(1)
+mode_string=""
+
+if img.mode=="1":
+	bytes_per_pixel=1
+	mode_string="monochrom"
+
+elif img.mode=="L":
+	bytes_per_pixel=1
+	mode_string="greyscale"
+
+elif img.mode=="P":
+	bytes_per_pixel=1
+	mode_string="palette"
+
+elif img.mode=="RGB":
+	bytes_per_pixel=3
+	mode_string="RGB"
+
+elif img.mode=="RGBA":
+	bytes_per_pixel=4
+	mode_string="RGBA"
+
+elif img.mode=="CMYK":
+	bytes_per_pixel=4
+	mode_string="CMYK"
+
+elif img.mode=="YCbCr":
+	bytes_per_pixel=3
+	mode_string="YCbCr"
+
+elif img.mode=="I":
+	bytes_per_pixel=4
+	mode_string="integer"
+
+elif	img.mode=="F":
+	bytes_per_pixel=4
+	mode_string="float"
+else:	
+	print "error"
+	exit(1)
+
+image_width=img.size[0]
+image_height=img.size[1]
+image_size=image_width*image_height
+
+sys.stdout.write("/*Image Data\n")
+sys.stdout.write("source:"+img.format+"\n")
+sys.stdout.write("mode:"+mode_string+"\n")
+sys.stdout.write("depth:"+str(bytes_per_pixel)+"\n")
+sys.stdout.write("size: "+str(img.size[0])+"*"+str(img.size[1])+"\n")
+sys.stdout.write("*/\n\n")
+
+sys.stdout.write("#define IMAGE_SIZE "+str(image_size)+"\n")
+sys.stdout.write("#define IMAGE_WIDTH "+str(image_width)+"\n")
+sys.stdout.write("#define IMAGE_HEIGHT "+str(image_height)+"\n")
+sys.stdout.write("uint8_t image[]=\n{")
+
+i=0
+for y in xrange(img.size[1]):
+	for x in xrange(img.size[0]):
+		if i==10:
+			sys.stdout.write("\n")
+			i=0
+		sys.stdout.write(str(img.getpixel((x,y)))+",")
+		i=i+1
+sys.stdout.write("};\n")
+
