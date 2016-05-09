@@ -4,9 +4,7 @@
 *.user
 *~
 
-build/
-bin/
-CmakeFiles
-CMakeCache.txt
-
 .map
+*.hex
+*.elf
+

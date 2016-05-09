@@ -1,5 +1,5 @@
 #by David Leiter 2013
-PROGNAME=dfw01
+PROGNAME=dfw
 MMCU=atmega325a
 FORMAT=ihex
 PROGRAMMER=stk500v2
@@ -21,7 +21,7 @@ HEADER = display.h console.h font.h led.h port.h
 all: $(PROGNAME).hex
 
 clean: 
-	rm -rf $(PROGNAME).hex $(PROGNAME) $(OBJ) *~
+	rm -rf $(PROGNAME).hex $(PROGNAME).elf $(OBJ) *~ .map
 
 programm:
 	avrdude $(AVRDUDE_PARAMS) -U flash:w:$(PROGNAME).hex
@@ -29,11 +29,11 @@ programm:
 fuse:
 	avrdude $(AVRDUDE_PARAMS) -U lfuse:w:0xff:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
 
-$(PROGNAME).hex:  $(PROGNAME)
-	$(OBJCOPY) -j .text -j .data -O $(FORMAT) $(PROGNAME) $(PROGNAME).hex
+$(PROGNAME).hex:  $(PROGNAME).elf
+	$(OBJCOPY) -j .text -j .data -O $(FORMAT) $(PROGNAME).elf $(PROGNAME).hex
 
-$(PROGNAME): $(OBJ) $(HEADER)
-	$(CC) $(LDFLAGS) -o $(PROGNAME) $(OBJ)
+$(PROGNAME).elf: $(OBJ) $(HEADER)
+	$(CC) $(LDFLAGS) -o $(PROGNAME).elf $(OBJ)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $<
