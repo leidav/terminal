@@ -14,7 +14,9 @@ OBJCOPY=avr-objcopy
 AVRDUDE_PARAMS= -F -B $(PROGCLK) -c $(PROGRAMMER) -p $(PART) -P $(PORT)
 CFLAGS= -mmcu=$(MMCU) -std=gnu99 -Os -Wall -Wextra -D F_CPU=$(F_CPU) -funsigned-char 
 LDFLAGS= -mmcu=$(MMCU) -Wl,-Map=$(PORGNAME).map
-OBJ= main.o display.o console.o
+SRC=main.c display.c console.c
+OBJ=$(SRC:.c=.o)
+
 HEADER = display.h console.h font.h led.h port.h
 all: $(PROGNAME).hex
 
