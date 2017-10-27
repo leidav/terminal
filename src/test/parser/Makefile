@@ -1,8 +1,8 @@
 #by David Leiter 2013
-PROGNAME=100
+PROGNAME=parser
 CC=gcc
 
-SRC_PREFIX=../../
+SRC_PREFIX=../../io_controller/
 
 CFLAGS= -std=gnu99 -Wall -Wextra -I $(SRC_PREFIX)
 LDFLAGS=
@@ -19,6 +19,7 @@ OBJ=$(SRC:.c=.o) $(TEST_SRC:.c=.o)
 
 all: $(PROGNAME)
 
+.PHONY: clean
 clean: 
 	rm -rf $(PROGNAME) $(OBJ) *~
 

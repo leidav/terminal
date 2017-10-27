@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 #by David Leiter 2012
 
 import sys
@@ -9,20 +9,20 @@ FONT_WIDTH=8
 
 
 if len(sys.argv) < 2:
-	print "error: not enough arguments"
+	print ("error: not enough arguments")
 	exit(1)
 try:
 	img = Image.open(sys.argv[1])
 
 except IOError:
-	print "error: can not open file"
+	print("error: can not open file")
 	exit(1)
 
-if img.mode=="L":
+if img.mode=="L" or img.mode=="1":
 	image_width=img.size[0]
 	image_height=img.size[1]
 	font_height=image_height
-	chars=image_width/FONT_WIDTH
+	chars=image_width//FONT_WIDTH
 	buffer_width=font_height*chars
 	
 	sys.stdout.write("/*font data\n")
@@ -34,16 +34,16 @@ if img.mode=="L":
 	sys.stdout.write("#define GLYPH_COUNT "+str(chars)+"\n")
 	sys.stdout.write("uint8_t font[""]=\n{\n")
 	
-	for char_cnt in xrange(chars):
+	for char_cnt in range(chars):
 		xpos=char_cnt*FONT_WIDTH
-		for y in xrange(font_height):
+		for y in range(font_height):
 			byte=0
-			for x in xrange(FONT_WIDTH):
+			for x in range(FONT_WIDTH):
 				byte<<=1
 				if img.getpixel((x+xpos,y)) > 0:
 					byte|=1
-			sys.stdout.write(str(byte)+",")
+			sys.stdout.write(hex(byte)+",")
 		sys.stdout.write("  //"+str(char_cnt)+"\n")
 	sys.stdout.write("};\n");
 else:
-	print "error: unsupported image"
+	print ("error: unsupported image")
